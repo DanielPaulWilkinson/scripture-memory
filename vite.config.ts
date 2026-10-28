@@ -9,6 +9,15 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
+      workbox: {
+        globIgnores: ['**/models/**', '**/ort/**', '**/*.wasm', '**/transformers*.js'],
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
+        runtimeCaching: [{
+          urlPattern: ({ url }) => /\/(models|ort)\/|\.wasm$|transformers[^/]*\.js$/.test(url.pathname),
+          handler: 'CacheFirst',
+          options: { cacheName: 'voice-model', expiration: { maxEntries: 20 }, cacheableResponse: { statuses: [200] } },
+        }],
+      },
       includeAssets: ['icon.svg', 'apple-touch-icon.png'],
       manifest: {
         id: 'hide-it', name: 'Hide It: scripture memory', short_name: 'Hide It',

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import SayIt from './SayIt.vue'
+import type { Result } from './compare'
 import { load, save, makeVerse, dueToday, grade, chunks, firstLetters, blanks, today, type Verse, type Grade } from './lib'
 
 const state = ref(load())
@@ -12,7 +14,9 @@ const current = ref<Verse | null>(null)
 const stage = ref(0)
 const shown = ref(false)
 const done = ref('')
+const heard = ref<Result | null>(null)
 
+const LABEL = { again: 'Not yet', nearly: 'Nearly', good: 'Got it' } as const
 const STAGES = computed(() => child.value
   ? ['Read it', 'First letters', 'Fill the gaps', 'More gaps', 'Say it from memory']
   : ['Read and say it', 'First letters only', 'A third blanked', 'Two thirds blanked', 'From the reference'])
@@ -27,8 +31,8 @@ const lines = computed(() => {
   return []
 })
 
-function start(v: Verse) { current.value = v; stage.value = 0; shown.value = false; done.value = ''; window.scrollTo(0, 0) }
-function next() { shown.value = false; stage.value++ }
+function start(v: Verse) { heard.value = null; current.value = v; stage.value = 0; shown.value = false; done.value = ''; window.scrollTo(0, 0) }
+function next() { heard.value = null; shown.value = false; stage.value++ }
 function mark(g: Grade) {
   if (!current.value) return
   const id = current.value.id
@@ -88,12 +92,14 @@ function remove(v: Verse) {
           <button v-if="stage > 0 && !shown" class="rounded border border-ink px-5 py-3" @click="shown = true">Reveal</button>
           <button v-if="stage < 4" class="rounded bg-rubric px-5 py-3 text-white" @click="next">{{ stage === 0 ? 'I have said it' : 'Next step' }}</button>
         </div>
+        <SayIt v-if="stage > 0" :key="current.id + stage" :text="current.text" :child="child" @result="r => heard = r" />
         <fieldset v-if="stage === 4 && shown" class="mt-8 border-t border-rule pt-5">
           <legend class="pt-5 text-lg">{{ child ? 'How did you do?' : 'How well did you recall it?' }}</legend>
+          <p v-if="heard" class="mt-2 text-moss">{{ child ? 'The app thinks: ' : 'Voice check suggests: ' }}{{ LABEL[heard.suggest] }}. {{ child ? 'You choose.' : 'Your call.' }}</p>
           <div class="mt-3 flex flex-wrap gap-3">
-            <button class="rounded border border-ink px-5 py-3" @click="mark('again')">Not yet</button>
-            <button class="rounded border border-ink px-5 py-3" @click="mark('nearly')">Nearly</button>
-            <button class="rounded bg-rubric px-5 py-3 text-white" @click="mark('good')">Got it</button>
+            <button v-for="g in (['again', 'nearly', 'good'] as const)" :key="g"
+              :class="['rounded px-5 py-3', g === 'good' ? 'bg-rubric text-white' : 'border border-ink', heard?.suggest === g ? 'ring-2 ring-ink ring-offset-2 ring-offset-linen' : '']"
+              @click="mark(g)">{{ LABEL[g] }}<span v-if="heard?.suggest === g"> (suggested)</span></button>
           </div>
         </fieldset>
       </section>

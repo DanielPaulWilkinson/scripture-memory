@@ -8,3 +8,4 @@ html { -webkit-text-size-adjust: 100%; }
 .fade-enter-active { transition: opacity .35s ease; }
 .fade-enter-from { opacity: 0; }
 @media (prefers-reduced-motion: reduce) { .fade-enter-active { transition: none; } }
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}

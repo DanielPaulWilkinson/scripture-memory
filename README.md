@@ -11,3 +11,7 @@ No account, no backend, no analytics, no external requests. Data lives in localS
 
     npm install && npm run dev
     npm test
+
+## Say it (optional, on-device)
+
+On the recall steps you can tap "Say it" and the app checks your words. Speech is recognised entirely in the browser with [Whisper tiny.en](https://huggingface.co/Xenova/whisper-tiny.en) (OpenAI Whisper, quantised ONNX weights, Apache-2.0 per the model card; Whisper itself is MIT) running on [Transformers.js](https://github.com/huggingface/transformers.js) and ONNX Runtime Web (both Apache-2.0 / MIT). The model (42 MB) and runtime (21 MB) are served from this app, downloaded only when you choose "Download voice model", and cached by the service worker. No audio leaves the device. The result is a suggestion; you still choose the grade.
