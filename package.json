@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vue-tsc --noEmit && vite build && rm -f dist/assets/*.wasm && cp dist/index.html dist/404.html && touch dist/.nojekyll",
     "preview": "vite preview",
     "test": "vitest run"
   },
