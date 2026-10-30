@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import SayIt from './SayIt.vue'
 import type { Result } from './compare'
+import { parseDeck, fetchDeck, newVerses, type Deck } from './deck'
 import { load, save, makeVerse, dueToday, grade, chunks, firstLetters, blanks, today, type Verse, type Grade } from './lib'
 
 const state = ref(load())
@@ -54,6 +55,34 @@ function add() {
   state.value.verses.push(makeVerse(newRef.value, newText.value))
   newRef.value = ''; newText.value = ''; adding.value = false
 }
+const pending = ref<{ deck: Deck; fresh: Verse[] } | null>(null)
+const importMsg = ref('')
+function offer(r: ReturnType<typeof parseDeck>) {
+  importMsg.value = ''; current.value = null
+  if (!r.ok) { pending.value = null; importMsg.value = r.error; return }
+  pending.value = { deck: r.deck, fresh: newVerses(state.value.verses, r.deck) }
+  window.scrollTo(0, 0)
+}
+async function pickFile(e: Event) {
+  const input = e.target as HTMLInputElement
+  const f = input.files?.[0]; input.value = ''
+  if (!f) return
+  if (f.size > 256 * 1024) return offer({ ok: false, error: 'That file is too big for a deck.' })
+  offer(parseDeck(await f.text()))
+}
+function confirmImport() {
+  if (!pending.value) return
+  const { deck, fresh } = pending.value
+  state.value.verses.push(...fresh)
+  done.value = 'Added ' + fresh.length + (fresh.length === 1 ? ' verse' : ' verses') + ' from ' + deck.name + '.'
+  pending.value = null
+}
+const deckParam = new URLSearchParams(location.search).get('deck')
+if (deckParam) {
+  history.replaceState(null, '', location.pathname + location.hash)
+  importMsg.value = 'Opening deck…'
+  fetchDeck(deckParam).then(offer)
+}
 function remove(v: Verse) {
   if (confirm('Remove ' + v.ref + '?')) state.value.verses = state.value.verses.filter(x => x.id !== v.id)
 }
@@ -70,6 +99,19 @@ function remove(v: Verse) {
     </header>
 
     <main class="md:col-start-2 md:row-start-2" id="main">
+      <p v-if="importMsg" class="mb-6 border-l-4 border-rubric pl-4 text-lg" role="status">{{ importMsg }}</p>
+      <section v-if="pending" aria-labelledby="imp" class="mb-10 border-y border-rule py-6">
+        <h2 id="imp" class="text-[1.6rem] leading-tight md:text-[2rem]">{{ pending.fresh.length ? 'Add ' + pending.fresh.length + (pending.fresh.length === 1 ? ' verse' : ' verses') + ' from ' + pending.deck.name + '?' : 'You already have every verse in ' + pending.deck.name + '.' }}</h2>
+        <p v-if="pending.deck.description" class="mt-2 max-w-prose text-moss">{{ pending.deck.description }}</p>
+        <p class="mt-2 text-sm text-moss">{{ pending.deck.translation }}<template v-if="pending.fresh.length < pending.deck.verses.length && pending.fresh.length">. {{ pending.deck.verses.length - pending.fresh.length }} already in your list will be skipped</template>.</p>
+        <ul v-if="pending.fresh.length" class="mt-3 text-moss">
+          <li v-for="v in pending.fresh" :key="v.id">{{ v.ref }}</li>
+        </ul>
+        <div class="mt-5 flex flex-wrap gap-3">
+          <button v-if="pending.fresh.length" class="rounded bg-rubric px-5 py-3 text-white" @click="confirmImport">Add verses</button>
+          <button class="rounded border border-ink px-5 py-3" @click="pending = null">{{ pending.fresh.length ? 'Cancel' : 'Close' }}</button>
+        </div>
+      </section>
       <section v-if="current" aria-live="polite">
         <button class="mb-6 text-moss underline underline-offset-4" @click="current = null">Back to today</button>
         <p class="text-rubric text-lg">{{ current.ref }}</p>
@@ -136,6 +178,7 @@ function remove(v: Verse) {
         <label class="block">Verse text<textarea v-model="newText" required rows="4" placeholder="Paste the words here" class="mt-1 block w-full rounded border border-moss bg-white px-3 py-2"></textarea></label>
         <div class="flex gap-3"><button class="rounded bg-rubric px-4 py-2 text-white">Save</button><button type="button" class="px-2" @click="adding = false">Cancel</button></div>
       </form>
+      <label class="mt-3 block w-fit cursor-pointer text-rubric underline underline-offset-4 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ink">Import a deck<input type="file" accept=".json,application/json" class="sr-only" @change="pickFile" /></label>
       <p class="mt-8 text-sm text-moss">Starter verses are from the King James Version (public domain). Everything stays on this device.</p>
     </aside>
   </div>

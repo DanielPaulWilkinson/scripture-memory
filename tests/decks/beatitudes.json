@@ -1,0 +1,49 @@
+{
+  "format": "hide-it-deck",
+  "version": 1,
+  "name": "The Beatitudes",
+  "description": "The blessings that open the Sermon on the Mount.",
+  "translation": "BSB (Berean Standard Bible, public domain)",
+  "verses": [
+    {
+      "ref": "Matthew 5:3",
+      "text": "“Blessed are the poor in spirit, for theirs is the kingdom of heaven."
+    },
+    {
+      "ref": "Matthew 5:4",
+      "text": "Blessed are those who mourn, for they will be comforted."
+    },
+    {
+      "ref": "Matthew 5:5",
+      "text": "Blessed are the meek, for they will inherit the earth."
+    },
+    {
+      "ref": "Matthew 5:6",
+      "text": "Blessed are those who hunger and thirst for righteousness, for they will be filled."
+    },
+    {
+      "ref": "Matthew 5:7",
+      "text": "Blessed are the merciful, for they will be shown mercy."
+    },
+    {
+      "ref": "Matthew 5:8",
+      "text": "Blessed are the pure in heart, for they will see God."
+    },
+    {
+      "ref": "Matthew 5:9",
+      "text": "Blessed are the peacemakers, for they will be called sons of God."
+    },
+    {
+      "ref": "Matthew 5:10",
+      "text": "Blessed are those who are persecuted because of righteousness, for theirs is the kingdom of heaven."
+    },
+    {
+      "ref": "Matthew 5:11",
+      "text": "Blessed are you when people insult you, persecute you, and falsely say all kinds of evil against you because of Me."
+    },
+    {
+      "ref": "Matthew 5:12",
+      "text": "Rejoice and be glad, because great is your reward in heaven, for in the same way they persecuted the prophets before you."
+    }
+  ]
+}

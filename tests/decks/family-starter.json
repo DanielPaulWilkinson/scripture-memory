@@ -1,0 +1,49 @@
+{
+  "format": "hide-it-deck",
+  "version": 1,
+  "name": "Family starter pack",
+  "description": "Short, simple verses for children to learn first.",
+  "translation": "BSB (Berean Standard Bible, public domain)",
+  "verses": [
+    {
+      "ref": "Genesis 1:1",
+      "text": "In the beginning God created the heavens and the earth."
+    },
+    {
+      "ref": "1 John 4:19",
+      "text": "We love because He first loved us."
+    },
+    {
+      "ref": "Psalm 56:3",
+      "text": "When I am afraid, I put my trust in You."
+    },
+    {
+      "ref": "Psalm 118:24",
+      "text": "This is the day that the LORD has made; we will rejoice and be glad in it."
+    },
+    {
+      "ref": "Ephesians 4:32",
+      "text": "Be kind and tenderhearted to one another, forgiving each other just as in Christ God forgave you."
+    },
+    {
+      "ref": "Psalm 119:105",
+      "text": "Your word is a lamp to my feet and a light to my path."
+    },
+    {
+      "ref": "Colossians 3:20",
+      "text": "Children, obey your parents in everything, for this is pleasing to the Lord."
+    },
+    {
+      "ref": "Philippians 4:13",
+      "text": "I can do all things through Christ who gives me strength."
+    },
+    {
+      "ref": "Joshua 1:9",
+      "text": "Have I not commanded you to be strong and courageous? Do not be afraid; do not be discouraged, for the LORD your God is with you wherever you go.”"
+    },
+    {
+      "ref": "John 3:16",
+      "text": "For God so loved the world that He gave His one and only Son, that everyone who believes in Him shall not perish but have eternal life."
+    }
+  ]
+}
